@@ -1,62 +1,183 @@
-import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Keyboard,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {
   EnvelopeIcon,
   LockClosedIcon,
   EyeIcon,
   EyeSlashIcon,
 } from 'react-native-heroicons/outline';
+import axios from 'axios';
+import {HTTP_API} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { resolveConfig } from 'metro-config';
+
 const Login = () => {
   const [IconEyeClick, setIconEyeClick] = useState(true);
-  const [ErrorEmailMessage, setEmailErrorMessage] = useState('Please enter a valid email');
+  const [ErrorEmailMessage, setEmailErrorMessage] = useState('');
+  const [ErrorPassWordMessage, setErrorPassWordMessage] = useState('');
 
   const [CheckEmail, setCheckEmail] = useState(false);
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
-  const [CheckPassword,setCheckPassword]=useState(false)
+  const [CheckPassword, setCheckPassword] = useState(false);
 
+  // Validate Email
   const validateEmail = text => {
     if (text === '') {
-      setCheckEmail(false);
+      setCheckEmail(true);
+      setEmailErrorMessage('Please enter your email address');
     } else {
       const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       if (reg.test(text) === false) {
-        setEmail({email: text});
         setCheckEmail(true);
-        setEmailErrorMessage('Please enter a valid email');
+        setEmailErrorMessage('Invalid email format. Please try again');
         return false;
       } else {
         setCheckEmail(false);
-        setEmail({email: text});
+        setEmail(text);
+        setEmailErrorMessage('');
       }
     }
   };
 
-  const validatePassword = text => {                          
-    const strongPassword= /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    if (strongPassword.test(text) === false) {
-      console.log('bad password')
-      return false;
+  // Validate Password
+  const validatePassword = text => {
+    if (text === '') {
+      setErrorPassWordMessage('Please enter your password');
+      setCheckPassword(true);
+    } else if (text.length < 6) {
+      setErrorPassWordMessage(
+        'Please ensure your password is at least 6 characters long',
+      );
+      setCheckPassword(true);
     } else {
-      console.log('good password')
+      const strongPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+      if (strongPassword.test(text) === false) {
+        setErrorPassWordMessage(
+          'Please choose a better password. Try using a mix of letters, numbers and symbols',
+        );
+        setCheckPassword(true);
+        return false;
+      } else {
+        setErrorPassWordMessage('');
+        setCheckPassword(false);
+        setPassword(text);
+      }
     }
-}
+  };
+
+  // Check Show and Hide Keyboard
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  // Login Alert
+  const createTwoButtonAlert = () =>
+    Alert.alert('Message', 'Error', [{text: 'OK', onPress: () => {}}]);
+
+  // AsyncStorage Fuction
+  // Set AsyncStorage Fuction
+  const storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Get AsyncStorage Fuction
+  const getData = async key => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      console.log(value)
+      
+      if(value){
+        axios
+      .get(`${HTTP_API}product`)
+      .then(response => {
+        // Handle successful login
+        console.log(response)
+        console.log('tfreter')
+      })
+      .catch(error => {
+        // Handle login failure
+        console.log('tfreter')
+        console.error(error);
+      });
+      }
+      return value;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
+  // Login Fuction
+  const LoginHandle = () => {
+    const data = {
+      email: Email,
+      password: Password,
+    };
+
+    axios
+      .post(`${HTTP_API}auth/login`, data)
+      .then(response => {
+        // Handle successful login
+        storeData('Token', response.data.authentication.sessionToken);
+        getData('Token');
+      })
+      .catch(error => {
+        // Handle login failure
+        console.error(error);
+      });
+  };
 
   return (
     <View className="w-full h-screen bg-white flex-1">
-      <View className="h-[20%] justify-center items-center">
-        <Image
-          source={require('../img/logo.jpg')}
-          resizeMode="stretch"
-          className="w-[40%] h-[40%]"
-        />
+      <View
+        className={
+          keyboardStatus ? 'h-[5%]' : 'h-[25%] justify-center items-center'
+        }>
+        {keyboardStatus ? (
+          ''
+        ) : (
+          <Image
+            source={require('../img/logo.jpg')}
+            resizeMode="stretch"
+            className="w-[40%] h-[40%]"
+          />
+        )}
       </View>
-      <View className="w-full h-[80%] bg-[#128040] rounded-t-[40px] justify-center items-center">
+      <View
+        className={
+          keyboardStatus
+            ? 'w-full h-[95%] bg-[#128040] rounded-t-[40px] justify-center items-center'
+            : 'w-full h-[75%] bg-[#128040] rounded-t-[40px] justify-center items-center'
+        }>
         <Text className="text-2xl text-white">Sign in</Text>
         <View className="w-[85%]">
           <View>
             <Text className="text-lg text-white">
-              Email <EnvelopeIcon size={16} color={'white'} />
+              Email <EnvelopeIcon size={16} color={'white'} />{' '}
+              <Text className="text-red-500">*</Text>
             </Text>
             <View className="bg-white/90 mt-2 border-b-2 border-black h-12 rounded-md flex-row items-center shadow-sm">
               <TextInput
@@ -65,20 +186,22 @@ const Login = () => {
                 inputMode="email"
                 autoComplete="email"
                 onChangeText={text => validateEmail(text)}
+                onSubmitEditing={Keyboard.dismiss}
               />
               <EnvelopeIcon size={30} color={'gray'} />
             </View>
             <Text className="text-red-500">{ErrorEmailMessage}</Text>
           </View>
-          <View className='mt-1'>
+          <View>
             <Text className="text-lg text-white">
-              Password <LockClosedIcon size={16} color={'white'} />
+              Password <LockClosedIcon size={16} color={'white'} />{' '}
+              <Text className="text-red-500">*</Text>
             </Text>
             <View className="bg-white/90 mt-2 border-b-2 border-black h-12 rounded-md flex-row items-center shadow-sm">
               <TextInput
                 className="w-[90%] pl-4"
                 placeholder="Enter your password"
-                inputMode='text'
+                inputMode="text"
                 secureTextEntry={IconEyeClick ? true : false}
                 onChangeText={text => validatePassword(text)}
               />
@@ -91,9 +214,11 @@ const Login = () => {
                 )}
               </TouchableOpacity>
             </View>
-            <Text className="text-red-500">Plese enter your password</Text>
+            <Text className="text-red-500">{ErrorPassWordMessage}</Text>
           </View>
-          <TouchableOpacity className="p-3 bg-[#069D45] shadow-sm mt-4 rounded-full">
+          <TouchableOpacity
+            className="p-3 bg-[#069D45] shadow-sm mt-2 rounded-full"
+            onPress={LoginHandle}>
             <Text className="text-lg text-white text-center">Login</Text>
           </TouchableOpacity>
         </View>
