@@ -16,7 +16,7 @@ import {
 import axios from 'axios';
 import {HTTP_API} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { resolveConfig } from 'metro-config';
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
   const [IconEyeClick, setIconEyeClick] = useState(true);
@@ -27,6 +27,9 @@ const Login = () => {
   const [Email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [CheckPassword, setCheckPassword] = useState(false);
+
+  const Navigation =useNavigation();
+
 
   // Validate Email
   const validateEmail = text => {
@@ -108,21 +111,6 @@ const Login = () => {
     try {
       const value = await AsyncStorage.getItem(key);
       console.log(value)
-      
-      if(value){
-        axios
-      .get(`${HTTP_API}product`)
-      .then(response => {
-        // Handle successful login
-        console.log(response)
-        console.log('tfreter')
-      })
-      .catch(error => {
-        // Handle login failure
-        console.log('tfreter')
-        console.error(error);
-      });
-      }
       return value;
     } catch (error) {
       console.log(error);
@@ -141,11 +129,16 @@ const Login = () => {
       .post(`${HTTP_API}auth/login`, data)
       .then(response => {
         // Handle successful login
-        storeData('Token', response.data.authentication.sessionToken);
-        getData('Token');
+        if(response.data!=null){
+          storeData('Token', response.data.authentication.sessionToken);
+          Navigation.navigate('Home',{name:'Home'})
+        }else{
+          console.log('Data is Null')
+        }
       })
       .catch(error => {
         // Handle login failure
+        console.log('And af afjafa f')
         console.error(error);
       });
   };
@@ -220,6 +213,9 @@ const Login = () => {
             className="p-3 bg-[#069D45] shadow-sm mt-2 rounded-full"
             onPress={LoginHandle}>
             <Text className="text-lg text-white text-center">Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className='w-full pt-2' onPress={()=>Navigation.navigate('Register',{name:'Register'})}>
+            <Text className='text-white text-center'>Don't have an account ? Sing Up</Text>
           </TouchableOpacity>
         </View>
       </View>
