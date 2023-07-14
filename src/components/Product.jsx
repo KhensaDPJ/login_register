@@ -1,11 +1,15 @@
-import { View, Text } from 'react-native'
+import { View, Text,Image } from 'react-native'
 import React from 'react'
 
-const Product = () => {
+const Product = ({title,detail,image,price}) => {
 
   return (
-    <View>
-      <Text>Product</Text>
+    <View className='flex-row gap-2 p-2'>
+      <Image source={{uri:image}} className='w-[50%] h-[200px]' resizeMode='stretch'/>
+      <View>
+      <Text className='text-lg'>{title}</Text>
+      <Text>{detail}</Text>
+      </View>
     </View>
   )
 }

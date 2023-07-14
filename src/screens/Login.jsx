@@ -93,9 +93,6 @@ const Login = () => {
     };
   }, []);
 
-  // Login Alert
-  const createTwoButtonAlert = () =>
-    Alert.alert('Message', 'Error', [{text: 'OK', onPress: () => {}}]);
 
   // AsyncStorage Fuction
   // Set AsyncStorage Fuction
@@ -106,17 +103,6 @@ const Login = () => {
       console.log(error);
     }
   };
-  // Get AsyncStorage Fuction
-  const getData = async key => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      console.log(value)
-      return value;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  };
 
   // Login Fuction
   const LoginHandle = () => {
@@ -125,20 +111,17 @@ const Login = () => {
       password: Password,
     };
 
-    axios
+     axios
       .post(`${HTTP_API}auth/login`, data)
       .then(response => {
         // Handle successful login
         if(response.data!=null){
           storeData('Token', response.data.authentication.sessionToken);
           Navigation.navigate('Home',{name:'Home'})
-        }else{
-          console.log('Data is Null')
         }
       })
       .catch(error => {
         // Handle login failure
-        console.log('And af afjafa f')
         console.error(error);
       });
   };
