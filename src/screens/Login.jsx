@@ -17,6 +17,7 @@ import axios from 'axios';
 import {HTTP_API} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 const Login = () => {
   const [IconEyeClick, setIconEyeClick] = useState(true);
@@ -102,7 +103,7 @@ const Login = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }; 
 
   // Login Fuction
   const LoginHandle = () => {
@@ -121,7 +122,7 @@ const Login = () => {
         }
       })
       .catch(error => {
-        // Handle login failure
+        // Handle login failur
         console.error(error);
       });
   };
@@ -161,6 +162,7 @@ const Login = () => {
                 placeholder="Enter your email"
                 inputMode="email"
                 autoComplete="email"
+                // value='khensa7@gmail.com'
                 onChangeText={text => validateEmail(text)}
                 onSubmitEditing={Keyboard.dismiss}
               />
@@ -178,6 +180,7 @@ const Login = () => {
                 className="w-[90%] pl-4"
                 placeholder="Enter your password"
                 inputMode="text"
+                // value='A1234a567'
                 secureTextEntry={IconEyeClick ? true : false}
                 onChangeText={text => validatePassword(text)}
               />

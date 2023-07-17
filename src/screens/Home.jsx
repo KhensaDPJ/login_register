@@ -11,12 +11,13 @@ import {HTTP_API} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Product from '../components/Product';
+import ModalAlert from '../components/alert/ModalAlert';
 
 const Home = () => {
   const Navigation = useNavigation();
   const [ProductData, setProductData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [checkStatus, setCheckStatus] = useState(false);
 
   const GetProductData = async () => {
     try {
@@ -28,17 +29,17 @@ const Home = () => {
       }
     } catch (err) {
       console.log(err);
-      const status= err.response.status
-      if(status=='403'){
-        await AsyncStorage.removeItem('Token')
-        Navigation.navigate('Login')
+      const status = err.response.status;
+      if (status == '403') {
+         await AsyncStorage.removeItem('Token'), Navigation.navigate('Login');
+        setCheckStatus(true);
       }
     }
   };
 
   useEffect(() => {
     GetProductData();
-  }, []);
+  }, [0]);
 
   return (
     <>
@@ -48,26 +49,28 @@ const Home = () => {
         }}>
         <Text>LogOut</Text>
       </TouchableOpacity>
-      <ScrollView className="w-full h-screen">
-        <View className="flex-1">
-          {isLoading ? (
-            <View className="w-full h-screen justify-center bg-white">
-              <ActivityIndicator size="large" color={'gray'} />
-            </View>
-          ) : (
-            ProductData.map(data => (
-              <Product
-                key={data._id}
-                title={data.title}
-                detail={data.detail}
-                image={data.image}
-                price={data.price}
-                // status={data.status}
-              />
-            ))
-          )}
-        </View>
-      </ScrollView>
+      {
+        <ScrollView className="w-full h-screen">
+          <View className="flex-1">
+            {isLoading ? (
+              <View className="w-full h-screen justify-center bg-white">
+                <ActivityIndicator size="large" color={'gray'} />
+              </View>
+            ) : (
+              ProductData.map(data => (
+                <Product
+                  key={data._id}
+                  title={data.title}
+                  detail={data.detail}
+                  image={data.image}
+                  price={data.price}
+                  // status={data.status}
+                />
+              ))
+            )}
+          </View>
+        </ScrollView>
+      }
     </>
   );
 };
