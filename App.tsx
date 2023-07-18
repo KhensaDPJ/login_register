@@ -28,7 +28,7 @@ const App = () => {
   }, [])
   return (
     <NavigationContainer>
-      {!isLoadPage ? null : <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
+      {!isLoadPage ? null : <Stack.Navigator initialRouteName={'Register'} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Home" component={Home} />

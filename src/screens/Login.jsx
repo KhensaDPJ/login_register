@@ -162,7 +162,6 @@ const Login = () => {
                 placeholder="Enter your email"
                 inputMode="email"
                 autoComplete="email"
-                // value='khensa7@gmail.com'
                 onChangeText={text => validateEmail(text)}
                 onSubmitEditing={Keyboard.dismiss}
               />
@@ -180,7 +179,6 @@ const Login = () => {
                 className="w-[90%] pl-4"
                 placeholder="Enter your password"
                 inputMode="text"
-                // value='A1234a567'
                 secureTextEntry={IconEyeClick ? true : false}
                 onChangeText={text => validatePassword(text)}
               />
