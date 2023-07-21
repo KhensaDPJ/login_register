@@ -6,6 +6,7 @@ import Login from './src/screens/Login';
 import Home from './src/screens/Home';
 import Register from './src/screens/Register';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MainContainer from './src/screens/MainContainer';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -18,7 +19,7 @@ const App = () => {
       setInitialRouteName('Login')
       setIsloadPage(true);
     } else {
-      setInitialRouteName('Home')
+      setInitialRouteName('MainContainer')
       setIsloadPage(true)
     }
   }
@@ -28,10 +29,10 @@ const App = () => {
   }, [])
   return (
     <NavigationContainer>
-      {!isLoadPage ? null : <Stack.Navigator initialRouteName={'Register'} screenOptions={{ headerShown: false }}>
+      {!isLoadPage ? null : <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="MainContainer" component={MainContainer} />
       </Stack.Navigator>}
     </NavigationContainer>
   )
