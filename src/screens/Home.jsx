@@ -47,9 +47,9 @@ const Home = () => {
   };
 
 
-  useEffect(() => {
-    GetProductData();
-  }, []);
+  // useEffect(() => {
+  //   GetProductData();
+  // }, []);
 
   return (
     <>
