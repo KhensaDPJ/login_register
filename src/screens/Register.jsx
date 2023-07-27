@@ -6,7 +6,6 @@ import {
   Image,
   Keyboard,
   ScrollView,
-  Modal,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {
@@ -16,9 +15,9 @@ import {
   EyeSlashIcon,
   UserCircleIcon,
 } from 'react-native-heroicons/outline';
-import axios from 'axios';
-import {HTTP_API} from '@env';
 import {useNavigation} from '@react-navigation/native';
+import api from '../../axios';
+import ModalAlert from '../components/ModalAlert';
 
 const Register = () => {
   const [IconEyeClick, setIconEyeClick] = useState(true);
@@ -156,8 +155,8 @@ const Register = () => {
         username: UserName,
       };
 
-      axios
-        .post(`${HTTP_API}auth/register`, data)
+      api
+        .post(`api/register`, data)
         .then(response => {
           // Handle successful register
           if (response.data != null) {
@@ -299,31 +298,14 @@ const Register = () => {
           </View>
         </View>
       </View>
-
-      <Modal animationType="fade" transparent={true} visible={ShowAlert}>
-        <View className="w-full h-screen bg-gray-500/50 justify-center items-center p-4 shadow-lg">
-          <View className="h-[45%] w-[80%] bg-white rounded-[20px] items-center">
-            <Image
-              source={require('../img/success.png')}
-              className="w-[60px] h-[60px] mt-8 mb-8"
-            />
-            <Text className="text-xl text-[#069D45] mb-4">
-              Register Successful!
-            </Text>
-            <Text className="text-base">
-              You can close this dialog and continue login
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setShowAlert(false), Navigation.navigate('Login')
-              }}
-              className="bg-[#069D45] w-20 h-10 justify-center items-center rounded-full mt-4">
-              <Text className="text-white text-lg font-extrabold">ok</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
+      {ShowAlert ? (
+        <ModalAlert
+          title={'Register Successful!'}
+          detail={'You can close this dialog and continue login'}
+          navigate={'Login'}
+          image={'https://cdn-icons-png.flaticon.com/512/7518/7518748.png'}
+        />
+      ) : null}
     </ScrollView>
   );
 };

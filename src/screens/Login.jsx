@@ -14,7 +14,6 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from 'react-native-heroicons/outline';
-import axios from 'axios';
 import {
   HTTP_API,
   HTTP_API2,
@@ -34,7 +33,6 @@ import {
 } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import ModalAlert from '../components/alert/ModalAlert';
 import api from '../../axios';
 
 const Login = () => {

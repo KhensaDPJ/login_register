@@ -1,43 +1,78 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import {GiftedChat, Bubble, Send, QuickReplies} from 'react-native-gifted-chat';
+import {View} from 'react-native';
+import {GiftedChat, Bubble, Send, InputToolbar} from 'react-native-gifted-chat';
 import {PaperAirplaneIcon} from 'react-native-heroicons/solid';
-
-const quickReplies = [
-  {
-    title: '😋 Yes',
-    value: 'yes',
-  },
-  {
-    title: '📷 Yes, let me show you with a picture!',
-    value: 'yes_picture',
-  },
-  {
-    title: '😞 Nope. What?',
-    value: 'no',
-  }
-];
-
-const initialMessages = [
-  {
-    _id: 1,
-    text: 'Do you like React Native?',
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      name: 'React Native Developer',
-      avatar:
-        'https://cdn.pixabay.com/photo/2016/04/26/07/57/woman-1353825_1280.png',
-    },
-    quickReplies: {type: 'radio', values: quickReplies}, // quickReplies prop
-  },
-  // ...
-];
+import api from '../../axios';
 
 const MessageList = () => {
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState([]);
+  const [defaultMessage, setDefaultMessage] = useState([]);
+  const [isTyping, setIsTyping] = useState(true);
+  var defaultMessageId = '';
+  var parentId = '';
+  var initialMessages = [];
+  const timestamp = Date.now();
+
+  const DefaultMessageServerError = () => {
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages(message =>
+        GiftedChat.append(message, [
+          {
+            text: 'ຂໍອະໄພເກີດຂໍ້ຜິດພາດ',
+            _id: parentId+timestamp.toString(),
+            createdAt: new Date(),
+            user: {
+              _id: 2,
+              name: 'bot',
+              avatar:
+                'https://static.vecteezy.com/system/resources/previews/004/996/790/original/robot-chatbot-icon-sign-free-vector.jpg',
+            },
+            quickReplies: {
+              type: 'radio',
+              values: initialMessages,
+            },
+          },
+        ]),
+      );
+    }, 3000);
+  };
+
+  const getDefaultQustion = async () => {
+    await api
+      .get('api/get/question_main')
+      .then(response => {
+        if (response.data != null) {
+          setDefaultMessage(response.data.data);
+          initialMessages = [
+            {
+              _id: 1,
+              user: {
+                _id: 2,
+              },
+              quickReplies: {type: 'radio', values: response.data.data},
+            },
+          ];
+          setMessages(initialMessages);
+          setIsTyping(false);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        DefaultMessageServerError();
+      });
+  };
+
+  useEffect(() => {
+    getDefaultQustion();
+  }, []);
+
+  const CustomInputToolbar = () => {
+    return <></>;
+  };
 
   const handleSend = (newMessages = []) => {
+    //sent message for text input
     setMessages(GiftedChat.append(messages, newMessages));
     setMessages(message =>
       GiftedChat.append(message, [
@@ -46,9 +81,8 @@ const MessageList = () => {
           user: {
             _id: 2,
           },
-          quickReplies: {type: 'radio', values: quickReplies}, // quickReplies prop
+          quickReplies: {type: 'radio', values: defaultMessage},
         },
-        // ...
       ]),
     );
   };
@@ -73,63 +107,92 @@ const MessageList = () => {
     return (
       <Send {...props}>
         <View className="justify-center w-full h-full p-4">
-          <PaperAirplaneIcon size={28} color={'#0C82FF'} />
+          <PaperAirplaneIcon size={28} color={'#128040'} />
         </View>
       </Send>
     );
   };
 
   const handleQuickReply = message => {
-    for (let value of message) {
-      const replyMessage = {
-        _id: Math.round(Math.random() * 10000000),
-        text: `You selected: this ${value.title}`,
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'You',
-        },
-      };
-
-      // Append the reply message to the messages array
-      setMessages(previousMessages =>
-        GiftedChat.append(previousMessages, [replyMessage]),
-      );
-      setMessages(message =>
-        GiftedChat.append(message, [
-          {
-            text: 'Do you like React Native?',
-            _id: Math.round(Math.random() * 1000000),
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native Developer',
-              avatar:
-                'https://cdn.pixabay.com/photo/2016/04/26/07/57/woman-1353825_1280.png',
-            },
-            quickReplies: {type: 'radio', values: quickReplies}, // quickReplies prop
+    //Auto message for user chat
+    if (defaultMessageId == '') {
+      for (let data of message) {
+        defaultMessageId = data.value;
+        setIsTyping(true);
+        const replyMessage = {
+          _id: defaultMessageId+timestamp.toString(),
+          text: `${data.title}`,
+          createdAt: new Date(),
+          user: {
+            _id: 1,
+            name: 'You',
           },
-          // ...
-        ]),
-      );
-      break;
+        };
+        setMessages(previousMessages =>
+          GiftedChat.append(previousMessages, [replyMessage]),
+        );
+        break;
+      }
     }
+    //Auto message for bot chat
+    setTimeout(() => {
+      if (defaultMessageId != '') {
+        const getDefaultQustion = async () => {
+          await api
+            .get(`api/get/question/${defaultMessageId}`)
+            .then(response => {
+              if (response.data != null) {
+                parentId = response.data.data.Question_button.map(
+                  value => value.value,
+                );
+                setMessages(message =>
+                  GiftedChat.append(message, [
+                    {
+                      text: response.data.data.answer_text.answer,
+                      _id: parentId+timestamp.toString(),
+                      createdAt: new Date(),
+                      user: {
+                        _id: 2,
+                        name: 'bot',
+                        avatar:
+                          'https://static.vecteezy.com/system/resources/previews/004/996/790/original/robot-chatbot-icon-sign-free-vector.jpg',
+                      },
+                      quickReplies: {
+                        type: 'radio',
+                        values: response.data.data.Question_button,
+                      },
+                    },
+                  ]),
+                );
+                setIsTyping(false);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              DefaultMessageServerError();
+            });
+        };
+        getDefaultQustion();
+      }
+    }, 1000);
   };
   return (
     <GiftedChat
       messages={messages}
-      onSend={handleSend}
+      // onSend={handleSend}
       user={{_id: 1}}
       textInputStyle={{maxHeight: 100}}
       renderBubble={renderBubble}
-      renderSend={renderSend}
+      // renderSend={renderSend}
       quickReplyStyle={{marginLeft: 10, marginRight: 10}}
       isLoadingEarlier={true}
       scrollToBottom={true}
       alignTop={true}
       infiniteScroll={true}
       alwaysShowSend={true}
+      isTyping={isTyping}
       onQuickReply={handleQuickReply}
+      renderInputToolbar={CustomInputToolbar}
     />
   );
 };

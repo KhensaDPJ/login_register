@@ -26,7 +26,7 @@ const Home = () => {
 
   const GetProductData = async () => {
     try {
-      const response = await axios.get(`${HTTP_API2}api/category/get/all`);
+      const response = await axios.get(`${HTTP_API2}api/product/get/all?page=1`);
       if (response.data != null) {
         const data = response.data.data;
         setProductData(data);
@@ -47,9 +47,9 @@ const Home = () => {
   };
 
 
-  // useEffect(() => {
-  //   GetProductData();
-  // }, []);
+  useEffect(() => {
+    GetProductData();
+  }, []);
 
   return (
     <>
@@ -73,7 +73,10 @@ const Home = () => {
             ProductData.map(data => (
               <Product
                 key={data._id}
-                Cat_name={data.category_name}
+                name={data.product_name}
+                quantity={data.quantity}
+                description={data.description}
+                image_path={data.image_path}
               />
             ))
           )
