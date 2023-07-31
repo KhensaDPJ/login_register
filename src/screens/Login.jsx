@@ -15,8 +15,6 @@ import {
   EyeSlashIcon,
 } from 'react-native-heroicons/outline';
 import {
-  HTTP_API,
-  HTTP_API2,
   MESSAGE_400,
   MESSAGE_401,
   MESSAGE_403,
@@ -160,8 +158,7 @@ const Login = () => {
           })
           .catch(error => {
             console.log(error)
-            // Handle login failur
-            const status = error.response.status;
+            var status = error.response.status;
             if (status == '400') {
               setModalMessage(MESSAGE_400);
             } else if ((status = '401')) {
@@ -188,7 +185,7 @@ const Login = () => {
               setModalMessage(MESSAGE_504);
             }
 
-            // console.log(ModalMessage, status);
+             console.log(ModalMessage, status);
           });
       }
     }

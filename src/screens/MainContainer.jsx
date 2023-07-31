@@ -1,24 +1,43 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Home from '../screens/Home';
-import Chat from '../screens/Chat';
 import Setting from '../screens/Setting';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   HomeIcon,
-  ChatBubbleLeftRightIcon,
+  ShoppingCartIcon,
   AdjustmentsHorizontalIcon,
 } from 'react-native-heroicons/solid';
+import ShoppingCart from './ShoppingCart';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MainContainer = () => {
   const Tab = createBottomTabNavigator();
+
+  // useEffect(()=>{
+  //   const CheckStorage=async ()=>{
+  //     const Token=await AsyncStorage.getItem('Token');
+  //     if(Token){
+
+  //     }
+  //   }
+  // },[])
+
   return (
     <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarActiveTintColor: '#128040',
-    })}
-      initialRouteName="Home"
-      >
+      screenOptions={({route}) => ({
+        headerShown: false,
+        tabBarStyle: {
+          height: 60,
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          left: 16,
+          borderRadius: 30,
+        },
+        tabBarActiveTintColor: '#128040',
+        tabBarHideOnKeyboard: true,
+      })}
+      initialRouteName="Home">
       <Tab.Screen
         name="Home"
         component={Home}
@@ -27,12 +46,13 @@ const MainContainer = () => {
         }}
       />
       <Tab.Screen
-        name="Chat"
-        component={Chat}
+        name="Cart"
+        component={ShoppingCart}
         options={{
           tabBarIcon: ({color, size}) => (
-            <ChatBubbleLeftRightIcon size={size} color={color} />
+            <ShoppingCartIcon size={size} color={color} />
           ),
+          tabBarBadge: 3,
         }}
       />
       <Tab.Screen

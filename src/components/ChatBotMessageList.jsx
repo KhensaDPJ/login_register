@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
-import {GiftedChat, Bubble, Send, InputToolbar} from 'react-native-gifted-chat';
+import {Image, View} from 'react-native';
+import {GiftedChat, Bubble, Send} from 'react-native-gifted-chat';
 import {PaperAirplaneIcon} from 'react-native-heroicons/solid';
 import api from '../../axios';
 
@@ -14,28 +14,26 @@ const MessageList = () => {
   const timestamp = Date.now();
 
   const DefaultMessageServerError = () => {
-    setTimeout(() => {
-      setIsTyping(false);
-      setMessages(message =>
-        GiftedChat.append(message, [
-          {
-            text: 'ຂໍອະໄພເກີດຂໍ້ຜິດພາດ',
-            _id: parentId+timestamp.toString(),
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'bot',
-              avatar:
-                'https://static.vecteezy.com/system/resources/previews/004/996/790/original/robot-chatbot-icon-sign-free-vector.jpg',
-            },
-            quickReplies: {
-              type: 'radio',
-              values: initialMessages,
-            },
+    setIsTyping(false);
+    setMessages(message =>
+      GiftedChat.append(message, [
+        {
+          text: 'ຂໍອະໄພເກີດຂໍ້ຜິດພາດ',
+          _id: parentId + timestamp.toString(),
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: 'bot',
+            avatar:
+              'https://static.vecteezy.com/system/resources/previews/004/996/790/original/robot-chatbot-icon-sign-free-vector.jpg',
           },
-        ]),
-      );
-    }, 3000);
+          quickReplies: {
+            type: 'radio',
+            values: initialMessages,
+          },
+        },
+      ]),
+    );
   };
 
   const getDefaultQustion = async () => {
@@ -47,8 +45,12 @@ const MessageList = () => {
           initialMessages = [
             {
               _id: 1,
+              text: 'Welcome to auto & laos company',
+              createdAt: new Date(),
               user: {
                 _id: 2,
+                avatar:
+                  'https://static.vecteezy.com/system/resources/previews/004/996/790/original/robot-chatbot-icon-sign-free-vector.jpg',
               },
               quickReplies: {type: 'radio', values: response.data.data},
             },
@@ -96,7 +98,7 @@ const MessageList = () => {
             backgroundColor: '#f0f0f0',
           },
           right: {
-            backgroundColor: '#0C82FF',
+            backgroundColor: '#128040',
           },
         }}
       />
@@ -120,7 +122,7 @@ const MessageList = () => {
         defaultMessageId = data.value;
         setIsTyping(true);
         const replyMessage = {
-          _id: defaultMessageId+timestamp.toString(),
+          _id: defaultMessageId + timestamp.toString(),
           text: `${data.title}`,
           createdAt: new Date(),
           user: {
@@ -149,7 +151,7 @@ const MessageList = () => {
                   GiftedChat.append(message, [
                     {
                       text: response.data.data.answer_text.answer,
-                      _id: parentId+timestamp.toString(),
+                      _id: parentId + timestamp.toString(),
                       createdAt: new Date(),
                       user: {
                         _id: 2,
@@ -193,6 +195,19 @@ const MessageList = () => {
       isTyping={isTyping}
       onQuickReply={handleQuickReply}
       renderInputToolbar={CustomInputToolbar}
+      renderMessageImage={props => {
+        return (
+          <View className="rounded-[15px] p-2">
+            <TouchableOpcity>
+              <Image
+                source={{uri: props.currentMessage.image}}
+                resizeMode="contain"
+                className="w-[200px] h-[200px] p-6 rounded-[15px] object-cover"
+              />
+            </TouchableOpcity>
+          </View>
+        );
+      }}
     />
   );
 };

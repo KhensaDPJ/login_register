@@ -1,14 +1,16 @@
-import {View,KeyboardAvoidingView} from 'react-native';
+import {View, KeyboardAvoidingView} from 'react-native';
 import React from 'react';
 import ChatHeader from '../components/ChatHeader';
-import MessageList from '../components/MessageList';
+import ChatBotMessageList from '../components/ChatBotMessageList';
+import ChatRealtimeMessageList from '../components/ChatRealtimeMessageList';
 
-const Chat = () => {
+const Chat = ({route}) => {;
+  const { name } = route.params;
   return (
     <View className="flex-1 bg-white">
       {Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
       <ChatHeader />
-      <MessageList />
+      {name == 'ChatBot' ? <ChatBotMessageList /> : <ChatRealtimeMessageList />}
     </View>
   );
 };
