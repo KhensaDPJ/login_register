@@ -1,21 +1,19 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {BellIcon} from 'react-native-heroicons/outline';
+import {MagnifyingGlassIcon} from 'react-native-heroicons/outline';
 
 const Navbar = () => {
   return (
-    <View className="w-full h-[8%] justify-center">
-      <View className='w-full h-[100%] flex-row justify-end items-center gap-4'>
-        <BellIcon size={30} color={'gray'}/>
-        <Text className="bg-red-500 rounded-full text-white absolute text-[10px] top-0 right-12">
-          99+
-        </Text>
-        <Image
-          source={require('../img/chat.png')}
-          className="w-[9%] h-[70%] rounded-full"
-          resizeMode="stretch"
+    <View className="w-full h-[8%] flex-row pt-1 pb-1 justify-center">
+      <View className="w-[70%] rounded-full bg-white shadow-md">
+        <TextInput
+          placeholder="Search..."
+          className="w-[100%] rounded-full pl-8"
         />
       </View>
+      <TouchableOpacity className="justify-center p-2 ml-2 rounded-full bg-[#128040] shadow-md">
+        <MagnifyingGlassIcon size={30} color={'white'} />
+      </TouchableOpacity>
     </View>
   );
 };

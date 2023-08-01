@@ -2,20 +2,22 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TextInput,
   ScrollView,
   ActivityIndicator,
   NativeModules,
+  SafeAreaView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {HTTP_API, HTTP_API2, MESSAGE_403} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import Product from '../components/Product';
 import ChatButton from '../components/ChatButton';
-import { BellIcon } from 'react-native-heroicons/outline';
 import Navbar from '../components/Navbar';
-import { TextInput } from 'react-native-paper';
+import Banner from '../components/Banner';
+import Outfit from '../components/Outfit';
+import Nearby from '../components/Nearby';
 
 const Home = () => {
   const Navigation = useNavigation();
@@ -55,7 +57,7 @@ const Home = () => {
   // }, []);
 
   return (
-    <View>
+    <>
       {/* <TouchableOpacity
         onPress={async () => {
           await AsyncStorage.removeItem('Token'), Navigation.navigate('Login');
@@ -63,7 +65,7 @@ const Home = () => {
         <Text>LogOut</Text>
       </TouchableOpacity> */}
       {
-        <ScrollView className="w-full h-screen">
+        <SafeAreaView className="w-full h-screen">
           <View className="flex-1 w-full h-screen">
             {isLoading ? (
               <>
@@ -73,29 +75,19 @@ const Home = () => {
               </>
             ) : (
               <>
-              <Navbar/>
-              <View className='w-[80%] rounded-full pl-6 bg-[#F1F4FA]'>
-              <TextInput className='w-[75%] bg-[#F1F4FA]'   style={{
-    borderWidth: 0,
-    borderColor: 'transparent',
-  }}/>
-              </View>
+                <Navbar />
+                <ScrollView>
+                  <Banner />
+                  <Outfit />
+                  <Nearby />
+                </ScrollView>
               </>
-              // ProductData.map(data => (
-              //   <Product
-              //     key={data._id}
-              //     name={data.product_name}
-              //     quantity={data.quantity}
-              //     description={data.description}
-              //     image_path={data.image_path}
-              //   />
-              // ))
             )}
           </View>
-        </ScrollView>
+        </SafeAreaView>
       }
       <ChatButton />
-    </View>
+    </>
   );
 };
 

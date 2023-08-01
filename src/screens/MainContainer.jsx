@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Home from '../screens/Home';
 import Setting from '../screens/Setting';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -8,19 +8,10 @@ import {
   AdjustmentsHorizontalIcon,
 } from 'react-native-heroicons/solid';
 import ShoppingCart from './ShoppingCart';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MainContainer = () => {
   const Tab = createBottomTabNavigator();
 
-  // useEffect(()=>{
-  //   const CheckStorage=async ()=>{
-  //     const Token=await AsyncStorage.getItem('Token');
-  //     if(Token){
-
-  //     }
-  //   }
-  // },[])
 
   return (
     <Tab.Navigator
