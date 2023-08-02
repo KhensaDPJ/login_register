@@ -11,9 +11,10 @@ const Navbar = () => {
           className="w-[100%] rounded-full pl-8"
         />
       </View>
-      <TouchableOpacity className="justify-center p-2 ml-2 rounded-full bg-[#128040] shadow-md">
-        <MagnifyingGlassIcon size={30} color={'white'} />
+      <TouchableOpacity className="justify-center items-center w-10 h-10 p-2 ml-2 rounded-full bg-[#128040] shadow-md">
+        <MagnifyingGlassIcon size={25} color={'white'} />
       </TouchableOpacity>
+
     </View>
   );
 };

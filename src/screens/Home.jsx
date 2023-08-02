@@ -18,6 +18,8 @@ import Navbar from '../components/Navbar';
 import Banner from '../components/Banner';
 import Outfit from '../components/Outfit';
 import Nearby from '../components/Nearby';
+import Material from '../components/Material';
+import Tips from '../components/Tips';
 
 const Home = () => {
   const Navigation = useNavigation();
@@ -76,10 +78,12 @@ const Home = () => {
             ) : (
               <>
                 <Navbar />
-                <ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false}>
                   <Banner />
                   <Outfit />
                   <Nearby />
+                  <Material/>
+                  <Tips/>
                 </ScrollView>
               </>
             )}
