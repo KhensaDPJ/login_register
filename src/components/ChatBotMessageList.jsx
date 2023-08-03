@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Image, View} from 'react-native';
+import {Image, View, Text} from 'react-native';
 import {GiftedChat, Bubble, Send} from 'react-native-gifted-chat';
 import {PaperAirplaneIcon} from 'react-native-heroicons/solid';
 import api from '../../axios';
@@ -179,36 +179,38 @@ const MessageList = () => {
     }, 1000);
   };
   return (
-    <GiftedChat
-      messages={messages}
-      // onSend={handleSend}
-      user={{_id: 1}}
-      textInputStyle={{maxHeight: 100}}
-      renderBubble={renderBubble}
-      // renderSend={renderSend}
-      quickReplyStyle={{marginLeft: 10, marginRight: 10}}
-      isLoadingEarlier={true}
-      scrollToBottom={true}
-      alignTop={true}
-      infiniteScroll={true}
-      alwaysShowSend={true}
-      isTyping={isTyping}
-      onQuickReply={handleQuickReply}
-      renderInputToolbar={CustomInputToolbar}
-      renderMessageImage={props => {
-        return (
-          <View className="rounded-[15px] p-2">
-            <TouchableOpcity>
-              <Image
-                source={{uri: props.currentMessage.image}}
-                resizeMode="contain"
-                className="w-[200px] h-[200px] p-6 rounded-[15px] object-cover"
-              />
-            </TouchableOpcity>
-          </View>
-        );
-      }}
-    />
+    <>
+      <GiftedChat
+        messages={messages}
+        // onSend={handleSend}
+        user={{_id: 1}}
+        textInputStyle={{maxHeight: 100}}
+        renderBubble={renderBubble}
+        // renderSend={renderSend}
+        quickReplyStyle={{marginLeft: 10, marginRight: 10}}
+        isLoadingEarlier={true}
+        scrollToBottom={true}
+        alignTop={true}
+        infiniteScroll={true}
+        alwaysShowSend={true}
+        isTyping={isTyping}
+        onQuickReply={handleQuickReply}
+        renderInputToolbar={CustomInputToolbar}
+        renderMessageImage={props => {
+          return (
+            <View className="rounded-[15px] p-2">
+              <TouchableOpcity>
+                <Image
+                  source={{uri: props.currentMessage.image}}
+                  resizeMode="contain"
+                  className="w-[200px] h-[200px] p-6 rounded-[15px] object-cover"
+                />
+              </TouchableOpcity>
+            </View>
+          );
+        }}
+      />
+    </>
   );
 };
 

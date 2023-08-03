@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Image,TouchableOpacity,Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {View} from 'react-native';
 import {
   GiftedChat,
   Bubble,
@@ -8,12 +8,12 @@ import {
   InputToolbar,
 } from 'react-native-gifted-chat';
 import {CameraIcon, PaperAirplaneIcon} from 'react-native-heroicons/solid';
-import ImagePicker from 'react-native-image-picker';
 import api from '../../axios';
 
 const ChatRealtimeMessageList = () => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(true);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const onSend = (newMessages = []) => {
     setMessages(prevMessages => GiftedChat.append(prevMessages, newMessages));
@@ -44,39 +44,12 @@ const ChatRealtimeMessageList = () => {
       </Send>
     );
   };
-
-// new handle image selection
-handleSendPicture = () => {
-  ImagePicker.showImagePicker({}, (response) => {
-    if (response.didCancel) {
-      console.log('ผู้ใช้ยกเลิกการเลือกรูป');
-    } else if (response.error) {
-      console.log('ข้อผิดพลาดในการเลือกรูป: ', response.error);
-    } else {
-      const source = { uri: response.uri };
-      const message = {
-        _id: Math.round(Math.random() * 1000000),
-        image: source,
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'React Native',
-        },
-      };
-      this.setState((previousState) => ({
-        messages: GiftedChat.append(previousState.messages, [message]),
-      }));
-    }
-  });
-};
-
-
   return (
     <GiftedChat
       messages={messages}
       onSend={onSend}
       user={{_id: 1}}
-      textInputStyle={{maxHeight: 100}}
+      textInputStyle={{maxHeight: 100,marginRight:10}}
       renderBubble={renderBubble}
       renderSend={renderSend}
       quickReplyStyle={{marginLeft: 10, marginRight: 10}}
@@ -93,10 +66,10 @@ handleSendPicture = () => {
           containerStyle={{
             position: 'absolute',
             right: 50,
-            bottom: 5,
+            bottom: 3,
             zIndex: 999,
           }}
-          onPressActionButton={handleSendPicture}
+          // onPressActionButton={handleSendPicture}
           icon={() => <CameraIcon size={30} color={'gray'} />}
         />
       )
@@ -107,8 +80,7 @@ handleSendPicture = () => {
           containerStyle={{
             marginLeft: 10,
             marginRight: 10,
-            marginBottom: 2,
-            borderRadius: 20,
+            borderRadius: 30,
             padding: 5,
           }}
         />
